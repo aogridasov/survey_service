@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1> Опросы </h1>
+
+{% for survey in page_obj %}
+  {% include 'surveys/includes/survey_card.html' %} 
+  {% if not forloop.last %}<hr>{% endif %}
+{% endfor %}
+
+{% include 'surveys/includes/paginator.html' %}
+{% endblock %}

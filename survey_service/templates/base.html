@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Survey Service</title>
+    <style>
+		header {
+			background-color: #3D99CE;
+			color: white;
+			padding: 20px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		header a {
+			color: white;
+			font-size: 18px;
+			font-weight: bold;
+			margin-left: 10px;
+			cursor: pointer;
+		}
+		header a:hover {
+			background-color: #2779BF;
+		}
+
+        main {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 50px 20px;
+		}
+
+		main button {
+			background-color: #3D99CE;
+			color: white;
+			font-size: 18px;
+			font-weight: bold;
+			margin-left: 10px;
+			cursor: pointer;
+		}
+
+		ul.pagi {
+			padding-left: 0px;
+			background-color: #3D99CE;
+			text-align: center;
+		  }
+		  ul.pagi > li {
+			display: inline-block;
+			padding: 10px 20px;
+		  }
+		  ul.pagi > li:hover {
+			background-color: #2779BF;
+		  }
+		  ul.pagi > li > a {
+			color: white;
+			text-decoration: none;
+		  }
+
+	</style>
+</head>
+<body>
+	<header>
+		<div>
+		<a href="{% url 'surveys:index'%}">Main</a>
+		<a href="{% url 'surveys:leaderboard'%}">Leaderboard</a>
+		</div>
+		{% if user.is_authenticated %}
+		<div>
+			<a href="{% url 'surveys:user_profile' user.id%}">
+				Текущий пользователь: {{ user.username }} 
+				||
+				Баланс: {{ user.coins.value }}
+			</a>
+			<a href="{% url 'auth:logout'%}">Logout</a>
+		</div>
+		{% else %}
+		<div>
+			<a href="{% url 'auth:login'%}">Login</a>
+			<a href="{% url 'auth:signup'%}">Sign Up</a>
+		</div>
+		{% endif %}
+	</header>
+	<main>
+        <div> 
+            {% block content %}
+            Здесь должен быть контент
+            {% endblock %}
+        </div>
+    </main>
+</body>
+</html>

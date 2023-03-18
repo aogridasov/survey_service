@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div style = "background-color: {{ background_color }}">    
+        <h1 style= "border: {{ border }}">{{ user.username }}</h1>
+        <b>Баланс: {{ user.coins.value }}</b>
+    <br>
+        <b>
+            <a href="{% url 'auth:buy_background' user.id %}">Купить красивый фон ({{ bg_color_price }})</a>
+            <a href="{% url 'auth:buy_border' user.id %}">Купить красивую рамку вокруг ника ({{ border_price }})</a>
+        </b>
+    <br>
+    <br>
+    <b>Пройденные опросы:</b>
+    <br>
+    <br>
+    {% for survey in page_obj %}
+        {% include 'surveys/includes/survey_card.html' %} 
+        {% if not forloop.last %}<hr>{% endif %}
+    {% endfor %}
+
+{% include 'surveys/includes/paginator.html' %}
+</div>
+{% endblock %}

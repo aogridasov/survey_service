@@ -1,0 +1,7 @@
+<div>
+    <b>Опрос:</b> <a href="{% url 'surveys:survey_page' survey.id %}"> {{ survey.title }}</a>
+    <br>
+    <b>Награда: {{ survey.coins_value }}</b> 
+    <br>
+    {{ survey.description }}
+</div>

@@ -1,0 +1,12 @@
+
+<div  {% if user.upgrades.background_color %} style="background-color:{{ background_color }}"{% endif %}>
+
+    <a href="{% url 'surveys:user_profile' user.id%}" {% if user.upgrades.username_border %} style="border: {{ border }}" {% endif %}>
+        {{ user.username }}
+    </a>
+
+
+    <br>
+    <b>Опросов пройдено: {{ user.completed_surveys.count }}</b> 
+    <br>
+</div>
