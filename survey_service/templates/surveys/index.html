@@ -3,7 +3,7 @@
 {% block content %}
 <h1> Опросы </h1>
 
-{% for survey in page_obj %}
+{% for survey in object_list %}
   {% include 'surveys/includes/survey_card.html' %} 
   {% if not forloop.last %}<hr>{% endif %}
 {% endfor %}

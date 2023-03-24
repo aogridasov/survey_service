@@ -3,7 +3,7 @@
 {% block content %}
 <h1> Рейтинг </h1>
 
-{% for user in page_obj %}
+{% for user in object_list %}
   {% include 'surveys/includes/user_card.html' %} 
   {% if not forloop.last %}<hr>{% endif %}
 {% endfor %}

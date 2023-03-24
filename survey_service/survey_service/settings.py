@@ -115,3 +115,4 @@ STATIC_URL = '/static/'
 # Pagination constants
 
 SURVEYS_PER_PAGE = 7
+USERS_PER_PAGE = 10

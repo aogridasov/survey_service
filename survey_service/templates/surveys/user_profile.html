@@ -3,15 +3,19 @@
 
 {% block content %}
 <div style = "background-color: {{ background_color }}">    
-        <h1 style= "border: {{ border }}">{{ user.username }}</h1>
-        <b>Баланс: {{ user.coins.value }}</b>
+        <h1 style= "border: {{ border }}">{{ profile_user.username }}</h1>
+        <b>Баланс: {{ profile_user.coins.value }}</b>
     <br>
+    {% if user.is_authenticated %}
+        {% if profile_user.id == user.id %}
         <b>
             <a href="{% url 'auth:buy_background' user.id %}">Купить красивый фон ({{ bg_color_price }})</a>
             <a href="{% url 'auth:buy_border' user.id %}">Купить красивую рамку вокруг ника ({{ border_price }})</a>
         </b>
     <br>
     <br>
+        {% endif %}
+    {% endif %}
     <b>Пройденные опросы:</b>
     <br>
     <br>

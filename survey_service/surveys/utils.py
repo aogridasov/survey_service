@@ -49,7 +49,7 @@ def get_upgrades_styles_all(context):
 
 def get_upgrades_context(context):
     """Дополняет контекст информацией об апгрейдах"""
-    user = context['user']
+    user = context['profile_user']
     context.update({
         'background_color': get_profile_bg_color(user),
         'border': get_profile_border(user),

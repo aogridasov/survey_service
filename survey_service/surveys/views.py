@@ -1,6 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView, SingleObjectMixin
+from django.conf import settings
 
 from users.models import User
 
@@ -10,33 +13,44 @@ from .utils import (get_upgrades_context, get_upgrades_styles_all,
                     give_user_coins, paginator)
 
 
-def index(request):
+class IndexView(ListView):
     """Отображает главную страницу"""
-    survey_list = Survey.objects.all()
-    page_obj = paginator(survey_list, request)
-    context = {
-        'page_obj': page_obj
-    }
-    return render(request, 'surveys/index.html', context)
+    model = Survey
+    paginate_by = settings.SURVEYS_PER_PAGE
+    template_name = 'surveys/index.html'
 
 
-def user_profile(request, user_id):
+class LeaderboardView(ListView):
+    """Отображает главную страницу"""
+    queryset = User.objects.annotate(completed=Count('completed_surveys')).order_by('-completed')
+    paginate_by = settings.USERS_PER_PAGE
+    template_name = 'surveys/leaderboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        get_upgrades_styles_all(context)
+        return context
+
+
+class UserDetailView(SingleObjectMixin, ListView):
     """Отображает профиль пользователя"""
-    user = get_object_or_404(User, pk=user_id)
-    completed_survey_list = CompletedSurvey.objects.filter(
-        user=user
-    ).prefetch_related('survey')
-    survey_list = [
-        complited_survey.survey for complited_survey in completed_survey_list
-    ]
-    page_obj = paginator(survey_list, request)
+    paginate_by = settings.SURVEYS_PER_PAGE
+    template_name = 'surveys/user_profile.html'
+    context_object_name = 'profile_user'
 
-    context = {
-        'user': user,
-        'page_obj': page_obj,
-    }
-    get_upgrades_context(context)
-    return render(request, 'surveys/user_profile.html', context)
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=User.objects.all())
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['request_user_id'] = self.request.user.id
+        get_upgrades_context(context)
+        return context
+
+    def get_queryset(self):
+        completed = self.object.completed_surveys.prefetch_related('survey')
+        return completed
 
 
 def survey_page(request, survey_id):
@@ -61,14 +75,3 @@ def apply_survey(request, survey_id):
         give_user_coins(survey, user)
         return redirect('surveys:index')
     return render(request, 'surveys/survey.html', {'form': form})
-
-
-def leaderboard(request):
-    """Отображает страницу с рейтингом участников"""
-    users = User.objects.annotate(completed=Count('completed_surveys')).order_by('-completed')
-    page_obj = paginator(users, request)
-    context = {
-        'page_obj': page_obj
-    }
-    get_upgrades_styles_all(context)
-    return render(request, 'surveys/leaderboard.html', context)

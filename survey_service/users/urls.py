@@ -27,7 +27,7 @@ urlpatterns = [
         name='buy_background'
     ),
     path(
-        'profile/<int:user_id>/bborder/',
+        '<int:user_id>/bborder/',
         views.buy_border,
         name='buy_border'
     ),
