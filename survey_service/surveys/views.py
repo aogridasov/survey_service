@@ -1,16 +1,14 @@
-from django.contrib.auth.decorators import login_required
-from django.db.models import Count
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.conf import settings
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.list import ListView
 from users.models import User
 
 from .forms import SurveyForm
-from .models import CompletedSurvey, Survey
+from .models import Survey
 from .utils import (get_upgrades_context, get_upgrades_styles_all,
-                    give_user_coins, paginator)
+                    give_user_coins)
 
 
 class IndexView(ListView):
@@ -22,7 +20,7 @@ class IndexView(ListView):
 
 class LeaderboardView(ListView):
     """Отображает главную страницу"""
-    queryset = User.objects.annotate(completed=Count('completed_surveys')).order_by('-completed')
+    queryset = User.objects.order_by('-completed')
     paginate_by = settings.USERS_PER_PAGE
     template_name = 'surveys/leaderboard.html'
 
@@ -50,7 +48,7 @@ class UserDetailView(SingleObjectMixin, ListView):
 
     def get_queryset(self):
         completed = self.object.completed_surveys.prefetch_related('survey')
-        return completed
+        return [comp_survey.survey for comp_survey in completed]
 
 
 def survey_page(request, survey_id):

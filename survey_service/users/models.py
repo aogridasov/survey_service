@@ -2,12 +2,24 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class UserCompletedSurveyManager(models.Manager):
+    """Кастомный менеджер для модели User"""
+    def get_queryset(self):
+        """Дополняем запрос к дб"""
+        return super().get_queryset().select_related(
+            'coins',
+            'upgrades'
+        ).annotate(completed=models.Count('completed_surveys'))
+
+
 class User(AbstractUser):
     """Модель пользователя"""
     username = models.CharField(
         max_length=20,
         unique=True,
     )
+
+    objects = UserCompletedSurveyManager()
 
 
 class Coins(models.Model):

@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
@@ -16,7 +16,7 @@ class SignUp(CreateView):
 
 def buy_background(request, user_id):
     """Обрабатывает нажатие кнопки покупки бэкграунда"""
-    user = User.objects.select_related('coins', 'upgrades').get(id=user_id)
+    user = get_object_or_404(User, id=user_id)
     coins = user.coins
     upgrades = user.upgrades
     if coins.value >= upgrades_cfg.BACKGROUND_COLOR_PRICE and not upgrades.background_color:
@@ -29,7 +29,7 @@ def buy_background(request, user_id):
 
 def buy_border(request, user_id):
     """Обрабатывает нажатие кнопки покупки рамки"""
-    user = User.objects.select_related('coins', 'upgrades').get(id=user_id)
+    user = get_object_or_404(User, id=user_id)
     coins = user.coins
     upgrades = user.upgrades
     if coins.value >= upgrades_cfg.BORDER_PRICE and not upgrades.username_border:
